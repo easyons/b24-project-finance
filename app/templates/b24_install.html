@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Установка приложения</title>
+  <script src="//api.bitrix24.com/api/v1/"></script>
+</head>
+<body>
+  <p>Приложение установлено. Окно можно закрыть.</p>
+  <script>
+    // Битрикс ждёт этот вызов, иначе установка считается незавершённой.
+    if (typeof BX24 !== 'undefined') {
+      BX24.init(function () { BX24.installFinish(); });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Сотрудники{% endblock %}
+{% block content %}
+<h1>Сотрудники</h1>
+<p class="muted">Приложением пользуются несколько человек. Тот, кто выбран в шапке,
+записывается автором операций.</p>
+
+<section class="card">
+  {% if employees %}
+    <table class="grid">
+      <thead><tr><th>Имя</th><th>Должность</th><th>Проекты</th><th>Из Битрикс24</th><th></th></tr></thead>
+      <tbody>
+      {% for e in employees %}
+        <tr>
+          <td>{{ e.full_name }}</td>
+          <td class="muted">{{ e.position or '—' }}</td>
+          <td class="muted">{{ e.projects | map(attribute='name') | join(', ') or '—' }}</td>
+          <td class="muted">{{ 'да' if e.b24_user_id else '—' }}</td>
+          <td class="num">
+            <form method="post" action="/employees/{{ e.id }}/delete"
+                  onsubmit="return confirm('Удалить сотрудника {{ e.full_name }}?')">
+              <button class="link danger" type="submit">удалить</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">Сотрудников пока нет.</p>
+  {% endif %}
+</section>
+
+<div class="cols">
+  <section class="card">
+    <h2>Добавить вручную</h2>
+    <form method="post" action="/employees" class="stack">
+      <label>Имя <input name="full_name" placeholder="Иванов Иван" required></label>
+      <label>Должность <input name="position" placeholder="необязательно"></label>
+      <button type="submit">Добавить</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Забрать из Битрикс24</h2>
+    {% if portal %}
+      <p class="muted">Портал подключён: {{ portal.domain }}</p>
+    {% else %}
+      <p class="muted">Приложение пока не установлено в портал. Кнопка сработает,
+      когда оно откроется вкладкой внутри Битрикс24 — как это настроить, написано в README.</p>
+    {% endif %}
+    <form method="post" action="/employees/import">
+      <button type="submit" {% if not portal %}disabled{% endif %}>Загрузить сотрудников</button>
+    </form>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/data
+    environment:
+      DB_PATH: /data/finance.db
+      # Адрес, по которому приложение доступно снаружи.
+      # Нужен только для встраивания в Битрикс24, локально можно не трогать.
+      PUBLIC_URL: http://localhost:8000
+    restart: unless-stopped

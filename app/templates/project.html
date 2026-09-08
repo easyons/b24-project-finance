@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }}{% endblock %}
+{% block content %}
+<p class="crumbs"><a href="/">← Все проекты</a></p>
+<h1>{{ project.name }}</h1>
+{% if project.description %}<p class="muted">{{ project.description }}</p>{% endif %}
+
+<section class="tiles">
+  <div class="tile"><span>Доходы</span><b>{{ summary.income | money }}</b></div>
+  <div class="tile"><span>Расходы</span><b>{{ summary.expense | money }}</b></div>
+  <div class="tile"><span>Прибыль</span>
+    <b class="{{ 'plus' if summary.profit > 0 else ('minus' if summary.profit < 0 else '') }}">
+      {{ summary.profit | money }}</b>
+  </div>
+  <div class="tile"><span>Рентабельность</span>
+    <b>{{ summary.margin | percent }}</b>
+  </div>
+</section>
+
+<div class="cols">
+  <section class="card">
+    <h2>Добавить операцию</h2>
+    <form method="post" action="/projects/{{ project.id }}/entries" class="stack">
+      <label>Статья
+        <select name="article_id" required>
+          <optgroup label="Доходы">
+            {% for a in income_articles %}<option value="{{ a.id }}">{{ a.name }}</option>{% endfor %}
+          </optgroup>
+          <optgroup label="Расходы">
+            {% for a in expense_articles %}<option value="{{ a.id }}">{{ a.name }}</option>{% endfor %}
+          </optgroup>
+        </select>
+      </label>
+      <label>Сумма, ₽
+        <input name="amount" inputmode="decimal" placeholder="например 120000" required>
+      </label>
+      <label>Дата
+        <input type="date" name="occurred_on" value="{{ today }}">
+      </label>
+      <label>Комментарий
+        <input name="comment" placeholder="необязательно">
+      </label>
+      <button type="submit">Добавить</button>
+      {% if not me %}<p class="hint">Выберите себя в шапке — тогда в операции запишется автор.</p>{% endif %}
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Разрез по статьям</h2>
+    {% if breakdown_income %}
+      <h3>Доходы</h3>
+      <ul class="plain">
+        {% for name, total in breakdown_income.items() %}
+          <li><span>{{ name }}</span><b>{{ total | money }}</b></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% if breakdown_expense %}
+      <h3>Расходы</h3>
+      <ul class="plain">
+        {% for name, total in breakdown_expense.items() %}
+          <li><span>{{ name }}</span><b>{{ total | money }}</b></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% if not breakdown_income and not breakdown_expense %}
+      <p class="muted">Операций пока нет.</p>
+    {% endif %}
+  </section>
+</div>
+
+<section class="card">
+  <h2>Команда проекта</h2>
+  {% if project.members %}
+    <ul class="chips">
+      {% for m in project.members %}
+        <li>{{ m.full_name }}{% if m.position %} <span class="muted">· {{ m.position }}</span>{% endif %}
+          <form method="post" action="/projects/{{ project.id }}/members/{{ m.id }}/remove">
+            <button class="link danger" type="submit" title="снять с проекта">×</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">На проекте пока никого нет.</p>
+  {% endif %}
+
+  {% if free_employees %}
+    <form method="post" action="/projects/{{ project.id }}/members" class="row">
+      <select name="employee_id" required>
+        {% for e in free_employees %}<option value="{{ e.id }}">{{ e.full_name }}</option>{% endfor %}
+      </select>
+      <button type="submit">Добавить на проект</button>
+    </form>
+  {% else %}
+    <p class="hint">Свободных сотрудников нет — заведите их в разделе «Сотрудники».</p>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>Операции</h2>
+  {% if entries %}
+  <table class="grid">
+    <thead>
+      <tr><th>Дата</th><th>Статья</th><th>Комментарий</th><th>Кто внёс</th><th class="num">Сумма</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for e in entries %}
+      <tr>
+        <td>{{ e.occurred_on.strftime('%d.%m.%Y') }}</td>
+        <td>{{ e.article.name }}</td>
+        <td class="muted">{{ e.comment }}</td>
+        <td class="muted">{{ e.author.full_name if e.author else '—' }}</td>
+        <td class="num {{ 'plus' if e.kind == 'income' else 'minus' }}">
+          {{ '+' if e.kind == 'income' else '−' }}{{ e.amount | money }}
+        </td>
+        <td class="num">
+          <form method="post" action="/entries/{{ e.id }}/delete">
+            <button class="link danger" type="submit">удалить</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="muted">Операций пока нет.</p>
+  {% endif %}
+</section>
+{% endblock %}

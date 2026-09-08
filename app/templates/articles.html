@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Статьи{% endblock %}
+{% block content %}
+<h1>Статьи доходов и расходов</h1>
+<p class="muted">Базовые статьи заведены сразу и удалению не подлежат. Свои можно добавить и убрать,
+пока по ним нет операций.</p>
+
+<div class="cols">
+  <section class="card">
+    <h2>Доходы</h2>
+    <ul class="plain">
+      {% for a in income_articles %}
+        <li>
+          <span>{{ a.name }}{% if a.is_builtin %} <span class="tag">базовая</span>{% endif %}</span>
+          {% if not a.is_builtin %}
+            <form method="post" action="/articles/{{ a.id }}/delete">
+              <button class="link danger" type="submit">удалить</button>
+            </form>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Расходы</h2>
+    <ul class="plain">
+      {% for a in expense_articles %}
+        <li>
+          <span>{{ a.name }}{% if a.is_builtin %} <span class="tag">базовая</span>{% endif %}</span>
+          {% if not a.is_builtin %}
+            <form method="post" action="/articles/{{ a.id }}/delete">
+              <button class="link danger" type="submit">удалить</button>
+            </form>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>
+
+<section class="card">
+  <h2>Новая статья</h2>
+  <form method="post" action="/articles" class="row">
+    <input name="name" placeholder="Название статьи" required>
+    <select name="kind">
+      <option value="expense">Расход</option>
+      <option value="income">Доход</option>
+    </select>
+    <button type="submit">Добавить</button>
+  </form>
+</section>
+{% endblock %}

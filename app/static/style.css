@@ -1,0 +1,109 @@
+:root {
+  --ink: #1b1f24;
+  --muted: #6b7480;
+  --line: #e3e7ec;
+  --bg: #f6f7f9;
+  --card: #fff;
+  --accent: #2563eb;
+  --plus: #197a3d;
+  --minus: #b3261e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font: 15px/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.top {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 24px; background: var(--card); border-bottom: 1px solid var(--line);
+}
+.nav { display: flex; align-items: baseline; gap: 18px; }
+.nav a { color: var(--ink); text-decoration: none; }
+.nav a:hover { color: var(--accent); }
+.brand { font-weight: 650; margin-right: 8px; }
+.whoami { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+
+main { max-width: 1060px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 24px; margin: 0 0 16px; }
+h2 { font-size: 17px; margin: 0 0 12px; }
+h3 { font-size: 14px; margin: 14px 0 6px; color: var(--muted); font-weight: 600; }
+.crumbs { margin: 0 0 8px; }
+.crumbs a, a { color: var(--accent); }
+.muted { color: var(--muted); }
+.hint { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+
+.flash { padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; }
+.flash.ok { background: #e8f5ec; color: var(--plus); }
+.flash.err { background: #fdeceb; color: var(--minus); }
+
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 18px; margin-bottom: 18px;
+}
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 760px) { .cols { grid-template-columns: 1fr; } }
+
+.tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+@media (max-width: 760px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+.tile {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.tile span { color: var(--muted); font-size: 13px; }
+.tile b { font-size: 20px; font-variant-numeric: tabular-nums; }
+
+table.grid { width: 100%; border-collapse: collapse; }
+table.grid th, table.grid td { padding: 9px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+table.grid thead th { color: var(--muted); font-weight: 600; font-size: 13px; }
+table.grid tfoot th { border-top: 2px solid var(--line); border-bottom: none; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.plus { color: var(--plus); }
+.minus { color: var(--minus); }
+
+ul.plain { list-style: none; padding: 0; margin: 0; }
+ul.plain li {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 7px 0; border-bottom: 1px solid var(--line);
+}
+ul.plain li b { font-variant-numeric: tabular-nums; }
+ul.chips { list-style: none; padding: 0; margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+ul.chips li {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px;
+}
+.tag {
+  font-size: 11px; color: var(--muted); border: 1px solid var(--line);
+  border-radius: 999px; padding: 1px 7px; margin-left: 6px;
+}
+
+form.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+form.row input { flex: 1 1 200px; }
+form.stack { display: flex; flex-direction: column; gap: 10px; }
+form.stack label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+form.stack input, form.stack select { font-size: 15px; color: var(--ink); }
+
+input, select {
+  padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px;
+  background: #fff; font: inherit;
+}
+input:focus, select:focus { outline: 2px solid #c7d7fb; border-color: var(--accent); }
+
+button {
+  padding: 9px 16px; border: none; border-radius: 8px; background: var(--accent);
+  color: #fff; font: inherit; cursor: pointer;
+}
+button:hover { background: #1d4fd8; }
+button:disabled { background: #b9c2cf; cursor: not-allowed; }
+button.link {
+  background: none; color: var(--accent); padding: 0; font-size: 13px;
+}
+button.link:hover { background: none; text-decoration: underline; }
+button.link.danger { color: var(--minus); }
+
+.foot { max-width: 1060px; margin: 0 auto; padding: 0 24px 32px; color: var(--muted); font-size: 13px; }

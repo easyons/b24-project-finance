@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Проекты</h1>
+
+{% if rows %}
+<table class="grid">
+  <thead>
+    <tr>
+      <th>Проект</th>
+      <th>Команда</th>
+      <th class="num">Доходы</th>
+      <th class="num">Расходы</th>
+      <th class="num">Прибыль</th>
+      <th class="num">Рентабельность</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for row in rows %}
+    <tr>
+      <td><a href="/projects/{{ row.project.id }}">{{ row.project.name }}</a></td>
+      <td class="muted">{{ row.project.members | length }}</td>
+      <td class="num">{{ row.summary.income | money }}</td>
+      <td class="num">{{ row.summary.expense | money }}</td>
+      <td class="num {{ 'plus' if row.summary.profit > 0 else ('minus' if row.summary.profit < 0 else '') }}">
+        {{ row.summary.profit | money }}
+      </td>
+      <td class="num">
+        {% if row.summary.margin is none %}<span class="muted">—</span>
+        {% else %}{{ row.summary.margin | percent }}{% endif %}
+      </td>
+      <td class="num">
+        <form method="post" action="/projects/{{ row.project.id }}/delete"
+              onsubmit="return confirm('Удалить проект «{{ row.project.name }}» вместе с операциями?')">
+          <button class="link danger" type="submit">удалить</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <th colspan="2">Итого</th>
+      <th class="num">{{ total_income | money }}</th>
+      <th class="num">{{ total_expense | money }}</th>
+      <th class="num {{ 'plus' if total_profit > 0 else ('minus' if total_profit < 0 else '') }}">
+        {{ total_profit | money }}
+      </th>
+      <th colspan="2"></th>
+    </tr>
+  </tfoot>
+</table>
+{% else %}
+<p class="muted">Проектов пока нет. Заведите первый — форма ниже.</p>
+{% endif %}
+
+<section class="card">
+  <h2>Новый проект</h2>
+  <form method="post" action="/projects" class="row">
+    <input name="name" placeholder="Название проекта" required>
+    <input name="description" placeholder="Описание, необязательно">
+    <button type="submit">Создать</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Учёт по проектам{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <nav class="nav">
+    <a class="brand" href="/">Учёт по проектам</a>
+    <a href="/">Проекты</a>
+    <a href="/articles">Статьи</a>
+    <a href="/employees">Сотрудники</a>
+  </nav>
+  <form class="whoami" method="post" action="/whoami">
+    <input type="hidden" name="next_url" value="{{ request.url.path }}">
+    <label for="employee_id">Я это:</label>
+    <select id="employee_id" name="employee_id" onchange="this.form.submit()">
+      <option value="">не выбран</option>
+      {% for e in employees %}
+        <option value="{{ e.id }}" {% if me and me.id == e.id %}selected{% endif %}>{{ e.full_name }}</option>
+      {% endfor %}
+    </select>
+  </form>
+</header>
+
+<main>
+  {% if msg %}<div class="flash ok">{{ msg }}</div>{% endif %}
+  {% if error %}<div class="flash err">{{ error }}</div>{% endif %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="foot">
+  Суммы в рублях. Рентабельность — отношение прибыли к доходам.
+</footer>
+</body>
+</html>
